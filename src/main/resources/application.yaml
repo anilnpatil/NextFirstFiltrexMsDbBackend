@@ -1,0 +1,78 @@
+# server:
+#   port: 9091
+# spring:
+#   application:
+#     name: NextFirstFiltrex
+
+#   datasource:
+#     url: jdbc:mysql://localhost:3306/filtrex_db
+#     username: root
+#     password: mysql
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+#     hikari:
+#       minimum-idle: 5
+#       maximum-pool-size: 20
+#       connection-timeout: 20000
+#       idle-timeout: 300000
+#       max-lifetime: 1200000
+#       auto-commit: true
+#       transaction-isolation: TRANSACTION_READ_COMMITTED
+
+#   jpa:
+#     hibernate:
+#       ddl-auto: validate
+#     show-sql: true
+#     properties:
+#       hibernate:
+#         format_sql: false  
+#     database-platform: org.hibernate.dialect.MySQLDialect
+
+#   flyway:
+#     enabled: true
+#     baseline-on-migrate: true
+#     locations: classpath:db/migration
+#     table: schema_version   
+
+
+server:
+  port: 9091
+
+spring:
+  application:
+    name: NextFirstFiltrex
+      
+  datasource:
+    url: jdbc:sqlserver://localhost:53995;databaseName=filtrex_db;encrypt=true;trustServerCertificate=true
+    username: app_user
+    password: mssql
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver  
+
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      auto-commit: true
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    validate-on-migrate: true
