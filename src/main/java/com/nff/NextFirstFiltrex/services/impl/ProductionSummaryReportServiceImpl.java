@@ -107,6 +107,7 @@ import com.nff.NextFirstFiltrex.dto.ProductionReportRow;
 import com.nff.NextFirstFiltrex.dto.ProductionTotalsRow;
 import com.nff.NextFirstFiltrex.repositories.DailyAggReportRepository;
 import com.nff.NextFirstFiltrex.repositories.MonthlyAggReportRepository;
+import com.nff.NextFirstFiltrex.repositories.ProductionSummaryReportRepository;
 import com.nff.NextFirstFiltrex.repositories.RawReportRepository;
 import com.nff.NextFirstFiltrex.repositories.ProductionTotalsRepository;
 import com.nff.NextFirstFiltrex.services.ProductionSummaryReportService;
@@ -116,12 +117,65 @@ import com.nff.NextFirstFiltrex.services.ProductionSummaryReportService;
 public class ProductionSummaryReportServiceImpl implements ProductionSummaryReportService {
 
     private final RawReportRepository rawRepo;
-    private final DailyAggReportRepository dailyRepo;
-    private final MonthlyAggReportRepository monthlyRepo;
+    private final DailyAggReportRepository dailyAggRepo;
+    private final ProductionSummaryReportRepository productionSummaryRepo;
+    private final MonthlyAggReportRepository monthlyAggRepo;
     private final ProductionTotalsRepository totalsRepo;
 
+    // @Override
+    // public List<ProductionReportRow> getReport(
+    //         LocalDate from,
+    //         LocalDate to,
+    //         String sku,
+    //         Integer shift) {
+
+    //         if (from.isAfter(to)) {
+    //             throw new IllegalArgumentException("From date must be <= To date");
+    //         }
+
+    //         LocalDate today = LocalDate.now();
+    //         LocalDate yesterday = today.minusDays(1);
+
+    //         List<ProductionReportRow> result = new ArrayList<>();
+
+    //         /* raw rows for today */
+    //         if (!from.isAfter(today) && !to.isBefore(today)) {
+    //             result.addAll(rawRepo.todayReport(today, sku, shift));
+    //         }
+
+    //         /* daily rows up to yesterday */
+    //         LocalDate dailyFrom = from;
+    //         LocalDate dailyTo = min(to, yesterday);
+    //         if (!dailyFrom.isAfter(dailyTo)) {
+    //             result.addAll(dailyAggRepo.range(dailyFrom, dailyTo, sku, shift));
+    //         }
+
+    //         /* monthly rows for fully closed months */
+    //         YearMonth reqStart = YearMonth.from(from);
+    //         YearMonth reqEnd   = YearMonth.from(to);
+    //         YearMonth lastFull = YearMonth.from(today.minusMonths(1));
+    //         if (reqStart.isBefore(lastFull)) {
+    //             YearMonth monthEnd = minYm(reqEnd, lastFull);
+    //             result.addAll(
+    //                 monthlyAggRepo.range(
+    //                     reqStart.getYear(), reqStart.getMonthValue(),
+    //                     monthEnd.getYear(), monthEnd.getMonthValue(),
+    //                     sku, shift
+    //                 )
+    //             );
+    //         }
+
+    //         result.sort(
+    //             Comparator.comparing(ProductionReportRow::date).reversed()
+    //                     .thenComparing(ProductionReportRow::sku)
+    //                     .thenComparingInt(ProductionReportRow::shift)
+    //         );
+
+    //         return result;
+    // }
+
     @Override
-    public List<ProductionReportRow> getReport(
+    public List<ProductionReportRow> getDailySummaryReport(
             LocalDate from,
             LocalDate to,
             String sku,
@@ -135,65 +189,13 @@ public class ProductionSummaryReportServiceImpl implements ProductionSummaryRepo
         LocalDate yesterday = today.minusDays(1);
 
         List<ProductionReportRow> result = new ArrayList<>();
-
-        /* raw rows for today */
-        if (!from.isAfter(today) && !to.isBefore(today)) {
-            result.addAll(rawRepo.todayReport(today, sku, shift));
-        }
-
-        /* daily rows up to yesterday */
-        LocalDate dailyFrom = from;
-        LocalDate dailyTo = min(to, yesterday);
-        if (!dailyFrom.isAfter(dailyTo)) {
-            result.addAll(dailyRepo.range(dailyFrom, dailyTo, sku, shift));
-        }
-
-        /* monthly rows for fully closed months */
-        YearMonth reqStart = YearMonth.from(from);
-        YearMonth reqEnd   = YearMonth.from(to);
-        YearMonth lastFull = YearMonth.from(today.minusMonths(1));
-        if (reqStart.isBefore(lastFull)) {
-            YearMonth monthEnd = minYm(reqEnd, lastFull);
-            result.addAll(
-                monthlyRepo.range(
-                    reqStart.getYear(), reqStart.getMonthValue(),
-                    monthEnd.getYear(), monthEnd.getMonthValue(),
-                    sku, shift
-                )
-            );
-        }
-
-        result.sort(
-            Comparator.comparing(ProductionReportRow::date).reversed()
-                      .thenComparing(ProductionReportRow::sku)
-                      .thenComparingInt(ProductionReportRow::shift)
-        );
-
-        return result;
-    }
-
-    @Override
-    public List<ProductionReportRow> getDailyReport(
-            LocalDate from,
-            LocalDate to,
-            String sku,
-            Integer shift) {
-
-        if (from.isAfter(to)) {
-            throw new IllegalArgumentException("From date must be <= To date");
-        }
-
-        LocalDate today = LocalDate.now();
-        LocalDate yesterday = today.minusDays(1);
-
-        List<ProductionReportRow> result = new ArrayList<>();
         if (!from.isAfter(today) && !to.isBefore(today)) {
             result.addAll(rawRepo.todayReport(today, sku, shift));
         }
         LocalDate dailyFrom = from;
         LocalDate dailyTo = min(to, yesterday);
         if (!dailyFrom.isAfter(dailyTo)) {
-            result.addAll(dailyRepo.range(dailyFrom, dailyTo, sku, shift));
+            result.addAll(productionSummaryRepo.dailySummaryReport(dailyFrom, dailyTo, sku, shift));
         }
         result.sort(
             Comparator.comparing(ProductionReportRow::date).reversed()
@@ -204,7 +206,7 @@ public class ProductionSummaryReportServiceImpl implements ProductionSummaryRepo
     }
 
     @Override
-    public List<ProductionReportRow> getWeeklyReport(
+    public List<ProductionReportRow> getWeeklySummaryReport(
             int year,
             String sku,
             Integer shift) {
@@ -214,7 +216,7 @@ public class ProductionSummaryReportServiceImpl implements ProductionSummaryRepo
     }
 
     @Override
-    public List<ProductionReportRow> getMonthlyReport(
+    public List<ProductionReportRow> getMonthlySummaryReport(
             int year,
             String sku,
             Integer shift) {

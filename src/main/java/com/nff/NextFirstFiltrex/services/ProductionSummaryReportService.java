@@ -23,24 +23,24 @@ import com.nff.NextFirstFiltrex.dto.ProductionReportRow;
 
 public interface ProductionSummaryReportService {
 
-    List<ProductionReportRow> getReport(
+//     List<ProductionReportRow> getReport(
+//             LocalDate from,
+//             LocalDate to,
+//             String sku,
+//             Integer shift);
+
+    List<ProductionReportRow> getDailySummaryReport(
             LocalDate from,
             LocalDate to,
             String sku,
             Integer shift);
 
-    List<ProductionReportRow> getDailyReport(
-            LocalDate from,
-            LocalDate to,
-            String sku,
-            Integer shift);
-
-    List<ProductionReportRow> getWeeklyReport(
+    List<ProductionReportRow> getWeeklySummaryReport(
             int year,
             String sku,
             Integer shift);
 
-    List<ProductionReportRow> getMonthlyReport(
+    List<ProductionReportRow> getMonthlySummaryReport(
             int year,
             String sku,
             Integer shift);

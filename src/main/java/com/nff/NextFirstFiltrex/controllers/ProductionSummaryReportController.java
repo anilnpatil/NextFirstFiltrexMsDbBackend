@@ -51,15 +51,15 @@ public class ProductionSummaryReportController {
 
     private final ProductionSummaryReportService service;
 
-    @GetMapping
-    public List<ProductionReportRow> report(
-            @RequestParam LocalDate from,
-            @RequestParam LocalDate to,
-            @RequestParam(defaultValue = "ALL") String sku,
-            @RequestParam(required = false) Integer shift) {
+    // @GetMapping
+    // public List<ProductionReportRow> report(
+    //         @RequestParam LocalDate from,
+    //         @RequestParam LocalDate to,
+    //         @RequestParam(defaultValue = "ALL") String sku,
+    //         @RequestParam(required = false) Integer shift) {
 
-        return service.getReport(from, to, sku, shift);
-    }
+    //     return service.getReport(from, to, sku, shift);
+    // }
 
     /* new specialised endpoints */
 
@@ -70,7 +70,7 @@ public class ProductionSummaryReportController {
             @RequestParam(defaultValue = "ALL") String sku,
             @RequestParam(required = false) Integer shift) {
 
-        return service.getDailyReport(from, to, sku, shift);
+        return service.getDailySummaryReport(from, to, sku, shift);
     }
 
     @GetMapping("/week")
@@ -79,7 +79,7 @@ public class ProductionSummaryReportController {
             @RequestParam(defaultValue = "ALL") String sku,
             @RequestParam(required = false) Integer shift) {
 
-        return service.getWeeklyReport(year, sku, shift);
+        return service.getWeeklySummaryReport(year, sku, shift);
     }
 
     @GetMapping("/month")
@@ -88,6 +88,6 @@ public class ProductionSummaryReportController {
             @RequestParam(defaultValue = "ALL") String sku,
             @RequestParam(required = false) Integer shift) {
 
-        return service.getMonthlyReport(year, sku, shift);
+        return service.getMonthlySummaryReport(year, sku, shift);
     }
 }
