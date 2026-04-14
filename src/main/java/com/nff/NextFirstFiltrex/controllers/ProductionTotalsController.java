@@ -17,31 +17,54 @@ public class ProductionTotalsController {
 
     private final ProductionTotalsService service;
 
+    private static Integer normalizeFilter(Integer value) {
+        return (value != null && value == 0) ? null : value;
+    }
+
+    /* ================= DAILY ================= */
+
     @GetMapping("/day")
     public List<ProductionTotalsRow> daily(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-            @RequestParam(defaultValue = "ALL") String sku,
-            @RequestParam(defaultValue = "ALL") String shift) {
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fromDate,
 
-        return service.getDailyTotals(fromDate, toDate, sku, shift);
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate toDate,
+
+            @RequestParam(required = false) Integer sku,
+            @RequestParam(required = false) Integer shift) {
+
+        Integer svcSku = normalizeFilter(sku);
+        Integer svcShift = normalizeFilter(shift);
+        return service.getDailyTotals(fromDate, toDate, svcSku, svcShift);
+        
     }
+
+    /* ================= WEEK ================= */
 
     @GetMapping("/week")
     public List<ProductionTotalsRow> weekly(
             @RequestParam int year,
-            @RequestParam(defaultValue = "ALL") String sku,
-            @RequestParam(defaultValue = "ALL") String shift) {
+            @RequestParam(required = false) Integer sku,
+            @RequestParam(required = false) Integer shift) {
 
-        return service.getWeeklyTotals(year, sku, shift);
+        Integer svcSku = normalizeFilter(sku);
+        Integer svcShift = normalizeFilter(shift);
+        return service.getWeeklyTotals(year, svcSku, svcShift);
     }
+
+    /* ================= MONTH ================= */
 
     @GetMapping("/month")
     public List<ProductionTotalsRow> monthly(
             @RequestParam int year,
-            @RequestParam(defaultValue = "ALL") String sku,
-            @RequestParam(defaultValue = "ALL") String shift) {
+            @RequestParam(required = false) Integer sku,
+            @RequestParam(required = false) Integer shift) {
 
-        return service.getMonthlyTotals(year, sku, shift);
+        Integer svcSku = normalizeFilter(sku);
+        Integer svcShift = normalizeFilter(shift);
+        return service.getMonthlyTotals(year, svcSku, svcShift);
     }
 }

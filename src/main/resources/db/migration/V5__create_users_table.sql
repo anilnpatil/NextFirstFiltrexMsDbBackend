@@ -1,3 +1,5 @@
+IF OBJECT_ID('dbo.users', 'U') IS NULL
+BEGIN
 CREATE TABLE dbo.users (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
 
@@ -7,3 +9,4 @@ CREATE TABLE dbo.users (
 
     role VARCHAR(20) NOT NULL
 );
+END

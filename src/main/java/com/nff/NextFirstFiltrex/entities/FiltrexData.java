@@ -3,11 +3,14 @@ package com.nff.NextFirstFiltrex.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "filtrex_data", schema = "dbo")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,44 +18,49 @@ public class FiltrexData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "production_count")
-    private Integer productionCount;
-
-    @Column(name = "status")
-    private Integer status;
-
-    @Column(name = "air_flow_test_result")
-    private String airFlowTestResult;
-
-    @Column(name = "final_assembly_height")
-    private Double finalAssemblyHeight;
-
-    @Column(name = "top_cap_press_time")
-    private Double topCapPressTime;
-
-    @Column(name = "top_cap_hold_time")
-    private Double topCapHoldTime;
-
-    @Column(name = "bottom_cap_press_time")
-    private Double bottomCapPressTime;
-
-    @Column(name = "bottom_cap_hold_time")
-    private Double bottomCapHoldTime;
-
-    @Column(name = "child_part_refill_status")
-    private String childPartRefillStatus;
+    @Column(name = "sl_no")
+    private Long slNo;   // use Long instead of Integer (better for large tables)
 
     @Column(name = "sku")
-    private String sku;   // 🔥 lowercase variable name
+    private Integer sku;
 
     @Column(name = "shift")
     private Integer shift;
 
-    @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    @Column(name = "top_cap_press_and_hold_time")
+    private Integer topCapPressAndHoldTime;
+
+    @Column(name = "bottom_cap_press_and_hold_time")
+    private Integer bottomCapPressAndHoldTime;
+
+    @Column(name = "block_height_value")
+    private Float blockHeightValue;   
+
+    @Column(name = "block_height_inspection_status")
+    private Integer blockHeightInspectionStatus;
+
+    @Column(name = "air_flow_test_result")
+    private Integer airFlowTestResult;
+
+    @Column(name = "part_status")
+    private Integer partStatus;
 
     @Column(name = "cycle_time")
-    private Double cycleTime; // seconds
+    private LocalTime cycleTime;
+
+    @Column(name = "production_date_time")
+    private LocalDateTime productionDateTime;
+
+    // computed column
+    @Column(name = "production_date", insertable = false, updatable = false)
+    private LocalDate productionDate;
+
+    @Column(name = "cloth_refill_status")
+    private Integer clothRefillStatus;
+
+    @Column(name = "cap_refill_status")
+    private Integer capRefillStatus;
+
+    @Column(name = "glue_refill_status")
+    private Integer glueRefillStatus;
 }

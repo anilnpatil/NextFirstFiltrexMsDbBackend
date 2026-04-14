@@ -29,14 +29,19 @@ public class FiltrexMonthlyAggregationRepository {
                 AND MONTH(production_date) = ?
               GROUP BY YEAR(production_date), MONTH(production_date), sku, shift
             ) AS src
-            ON (target.[year] = src.yr AND target.[month] = src.mth AND target.sku = src.sku AND target.[shift] = src.shift)
+            ON (
+                target.[year] = src.yr
+                AND target.[month] = src.mth
+                AND target.sku = src.sku
+                AND target.shift = src.shift
+            )
             WHEN MATCHED THEN
               UPDATE SET
                 total_count = src.total_count,
                 ok_count = src.ok_count,
                 not_ok_count = src.not_ok_count
             WHEN NOT MATCHED THEN
-              INSERT ([year], [month], sku, [shift], total_count, ok_count, not_ok_count)
+              INSERT ([year], [month], sku, shift, total_count, ok_count, not_ok_count)
               VALUES (src.yr, src.mth, src.sku, src.shift, src.total_count, src.ok_count, src.not_ok_count);
         """;
 

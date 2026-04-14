@@ -1,58 +1,29 @@
 package com.nff.NextFirstFiltrex.repositories.sql;
 
-public final class ProductionTotalsSql {
-
-    private ProductionTotalsSql() {}
-
-    /* ================= DAY ================= */
-    public static final String DAILY_TOTALS = """
-        SELECT
-          from_date,
-          to_date,
-          CONVERT(varchar(10), from_date, 23) AS period_key,
-          SUM(total_count) AS total_count,
-          SUM(ok_count) AS ok_count,
-          SUM(not_ok_count) AS not_ok_count
-        FROM (
-          -- Historical aggregated data
-          SELECT
-            production_date AS from_date,
-            production_date AS to_date,
-            total_count,
-            ok_count,
-            not_ok_count,
-            sku,
-            shift
-          FROM filtrex_daily_agg
-          WHERE production_date < CAST(GETDATE() AS DATE)
-            AND production_date BETWEEN ? AND ?
-            AND (? IS NULL OR sku = ?)
-            AND (? IS NULL OR shift = ?)
-
-          UNION ALL
-
-          -- Today's live data
-          SELECT
-            production_date AS from_date,
-            production_date AS to_date,
-            1 AS total_count,
-            CASE WHEN part_status = 1 THEN 1 ELSE 0 END AS ok_count,
-            CASE WHEN part_status <> 1 THEN 1 ELSE 0 END AS not_ok_count,
-            sku,
-            shift
-          FROM filtrex_data
-          WHERE production_date = CAST(GETDATE() AS DATE)
-            AND production_date BETWEEN ? AND ?
-            AND (? IS NULL OR sku = ?)
-            AND (? IS NULL OR shift = ?)
-        ) AS combined_data
-        GROUP BY from_date, to_date
-        ORDER BY from_date
-    """;
+public final class ProductionSummarySql {
 
 
-    /* ================= WEEK ================= */
-    public static final String WEEKLY_TOTALS = """
+  private ProductionSummarySql() {}
+
+/* ================= DAILY ================= */
+    public static final String DAILY_SUMMARY = """
+            SELECT
+              production_date AS date,
+              sku,
+              shift,
+              total_count,
+              ok_count,
+              not_ok_count
+            FROM filtrex_daily_agg
+            WHERE production_date BETWEEN ? AND ?
+              AND (? IS NULL OR sku = ?)
+              AND (? IS NULL OR shift = ?)
+            ORDER BY production_date
+        """;
+
+
+  /* ================= WEEK ================= */
+    public static final String WEEKLY_SUMMARY = """
       -- Historical aggregated data
       SELECT
           production_date,
@@ -87,8 +58,8 @@ public final class ProductionTotalsSql {
 
 
     /* ================= MONTH ================= */
-    public static final String MONTHLY_TOTALS_RANGE = """
-      -- Completed months
+    public static final String MONTHLY_SUMMARY = """
+      -- Completed past months
       SELECT
           CAST(year AS varchar(4)) + '-' + RIGHT('00' + CAST(month AS varchar(2)), 2) AS period_key,
           DATEFROMPARTS(year, month, 1) AS from_date,
@@ -103,11 +74,33 @@ public final class ProductionTotalsSql {
             BETWEEN (? * 12 + ?) AND (? * 12 + ?)
         AND (? IS NULL OR sku = ?)
         AND (? IS NULL OR shift = ?)
+        AND (year * 12 + month) < (YEAR(GETDATE()) * 12 + MONTH(GETDATE()))
       GROUP BY year, month, sku, shift
 
       UNION ALL
 
-      -- Current running month live data
+      -- Current running month totals from daily aggregation (up to yesterday)
+      SELECT
+          CAST(YEAR(production_date) AS varchar(4)) + '-' + RIGHT('00' + CAST(MONTH(production_date) AS varchar(2)), 2) AS period_key,
+          DATEFROMPARTS(YEAR(production_date), MONTH(production_date), 1) AS from_date,
+          MAX(production_date) AS to_date,
+          sku,
+          shift,
+          SUM(total_count) AS total_count,
+          SUM(ok_count) AS ok_count,
+          SUM(not_ok_count) AS not_ok_count
+      FROM filtrex_daily_agg
+      WHERE production_date BETWEEN DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+                                AND DATEADD(day, -1, CAST(GETDATE() AS date))
+        AND (? * 12 + ?) <= (YEAR(production_date) * 12 + MONTH(production_date))
+        AND (YEAR(production_date) * 12 + MONTH(production_date)) <= (? * 12 + ?)
+        AND (? IS NULL OR sku = ?)
+        AND (? IS NULL OR shift = ?)
+      GROUP BY YEAR(production_date), MONTH(production_date), sku, shift
+
+      UNION ALL
+
+      -- Today's live data from raw production
       SELECT
           CAST(YEAR(production_date_time) AS varchar(4)) + '-' 
               + RIGHT('00' + CAST(MONTH(production_date_time) AS varchar(2)), 2) AS period_key,
@@ -119,10 +112,9 @@ public final class ProductionTotalsSql {
           SUM(CASE WHEN part_status = 1 THEN 1 ELSE 0 END) AS ok_count,
           SUM(CASE WHEN part_status <> 1 THEN 1 ELSE 0 END) AS not_ok_count
       FROM dbo.filtrex_data
-      WHERE (YEAR(production_date_time) * 12 + MONTH(production_date_time))
-            BETWEEN (? * 12 + ?) AND (? * 12 + ?)
-        AND YEAR(production_date_time) = YEAR(GETDATE())
-        AND MONTH(production_date_time) = MONTH(GETDATE())
+      WHERE production_date = CAST(GETDATE() AS DATE)
+        AND (? * 12 + ?) <= (YEAR(production_date_time) * 12 + MONTH(production_date_time))
+        AND (YEAR(production_date_time) * 12 + MONTH(production_date_time)) <= (? * 12 + ?)
         AND (? IS NULL OR sku = ?)
         AND (? IS NULL OR shift = ?)
       GROUP BY YEAR(production_date_time), MONTH(production_date_time), sku, shift
@@ -131,3 +123,5 @@ public final class ProductionTotalsSql {
   """;
 
 }
+  
+

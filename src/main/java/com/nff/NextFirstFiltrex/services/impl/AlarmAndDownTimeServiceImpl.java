@@ -19,7 +19,7 @@ public class AlarmAndDownTimeServiceImpl implements AlarmsAndDownTimeService {
 
   @Override
   public ResponseEntity<AlarmAndDownTime> getLatestAlarm() {
-    AlarmAndDownTime latestAlarm = alarmAndDownTimeRepository.findTopByOrderByTimestampDesc();
+    AlarmAndDownTime latestAlarm = alarmAndDownTimeRepository.findTopByOrderByAlarmDateTimeDesc();
     if (latestAlarm == null) {
       throw new ResourceNotFoundException("No latest alarm data found");
     }

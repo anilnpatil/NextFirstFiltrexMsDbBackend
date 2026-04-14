@@ -1,37 +1,3 @@
-// package com.nff.NextFirstFiltrex.controllers;
-
-// import java.time.LocalDate;
-// import java.util.List;
-
-// import org.springframework.web.bind.annotation.*;
-
-// import lombok.RequiredArgsConstructor;
-// import com.nff.NextFirstFiltrex.dto.ProductionReportRow;
-// import com.nff.NextFirstFiltrex.services.impl.ProductionReportServiceImpl;
-
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
-
-
-// @RestController
-// @RequestMapping("/api/reports/production")
-// @CrossOrigin(origins = "*")
-// @RequiredArgsConstructor
-// public class ProductionReportController {
-
-//     private final ProductionReportServiceImpl service;
-
-//     @GetMapping
-//     public List<ProductionReportRow> report(
-//             @RequestParam LocalDate from,
-//             @RequestParam LocalDate to,
-//             @RequestParam(defaultValue = "ALL") String sku,
-//             @RequestParam(required = false) Integer shift) {
-             
-//         return service.getReport(from, to, sku, shift);
-//     }   
-    
-// }
 package com.nff.NextFirstFiltrex.controllers;
 
 import java.time.LocalDate;
@@ -40,54 +6,57 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
-import com.nff.NextFirstFiltrex.dto.ProductionReportRow;
+import com.nff.NextFirstFiltrex.dto.ProductionSummaryReportRow;
 import com.nff.NextFirstFiltrex.services.ProductionSummaryReportService;
 
 @RestController
-@RequestMapping("/api/reports/production")
+@RequestMapping("/api/reports/productionSummary")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ProductionSummaryReportController {
 
     private final ProductionSummaryReportService service;
 
-    // @GetMapping
-    // public List<ProductionReportRow> report(
-    //         @RequestParam LocalDate from,
-    //         @RequestParam LocalDate to,
-    //         @RequestParam(defaultValue = "ALL") String sku,
-    //         @RequestParam(required = false) Integer shift) {
-
-    //     return service.getReport(from, to, sku, shift);
-    // }
-
-    /* new specialised endpoints */
+    /* ================= DAILY ================= */
 
     @GetMapping("/day")
-    public List<ProductionReportRow> daily(
+    public List<ProductionSummaryReportRow> daily(
             @RequestParam LocalDate from,
             @RequestParam LocalDate to,
-            @RequestParam(defaultValue = "ALL") String sku,
+            @RequestParam(required = false) Integer sku,
             @RequestParam(required = false) Integer shift) {
 
-        return service.getDailySummaryReport(from, to, sku, shift);
+        Integer svcSku = (sku != null && sku == 0) ? null : sku;
+        Integer svcShift = (shift != null && shift == 0) ? null : shift;
+
+        return service.getDailySummaryReport(from, to, svcSku, svcShift);
     }
+
+    /* ================= WEEK ================= */
 
     @GetMapping("/week")
-    public List<ProductionReportRow> week(
+    public List<ProductionSummaryReportRow> week(
             @RequestParam int year,
-            @RequestParam(defaultValue = "ALL") String sku,
+            @RequestParam(required = false) Integer sku,
             @RequestParam(required = false) Integer shift) {
 
-        return service.getWeeklySummaryReport(year, sku, shift);
+        Integer svcSku = (sku != null && sku == 0) ? null : sku;
+        Integer svcShift = (shift != null && shift == 0) ? null : shift;
+
+        return service.getWeeklySummaryReport(year, svcSku, svcShift);
     }
 
+    /* ================= MONTH ================= */
+
     @GetMapping("/month")
-    public List<ProductionReportRow> month(
+    public List<ProductionSummaryReportRow> month(
             @RequestParam int year,
-            @RequestParam(defaultValue = "ALL") String sku,
+            @RequestParam(required = false) Integer sku,
             @RequestParam(required = false) Integer shift) {
 
-        return service.getMonthlySummaryReport(year, sku, shift);
+        Integer svcSku = (sku != null && sku == 0) ? null : sku;
+        Integer svcShift = (shift != null && shift == 0) ? null : shift;
+
+        return service.getMonthlySummaryReport(year, svcSku, svcShift);
     }
 }

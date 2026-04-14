@@ -1,20 +1,39 @@
+IF OBJECT_ID('dbo.filtrex_data', 'U') IS NULL
+BEGIN
 CREATE TABLE dbo.filtrex_data (
-  id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  production_count INT,
-  status INT,
-  air_flow_test_result VARCHAR(20),
-  final_assembly_height FLOAT,
-  top_cap_press_time FLOAT,
-  top_cap_hold_time FLOAT,
-  bottom_cap_press_time FLOAT,
-  bottom_cap_hold_time FLOAT,
-  child_part_refill_status VARCHAR(20),
-  sku VARCHAR(50),
-  shift INT,
-  [timestamp] DATETIME2 NOT NULL,
-  cycle_time FLOAT
+    sl_no BIGINT IDENTITY(1,1) PRIMARY KEY,
+
+    sku INT NULL,
+    shift INT NULL,
+
+    top_cap_press_and_hold_time INT NULL,
+    bottom_cap_press_and_hold_time INT NULL,
+
+    block_height_value FLOAT NULL,
+    block_height_inspection_status INT NULL,
+
+    air_flow_test_result INT NULL,
+    part_status INT NULL,
+
+    cycle_time TIME(7) NULL,
+
+    production_date_time DATETIME2 NULL,
+
+    -- computed date column for fast reporting
+    production_date AS CAST(production_date_time AS DATE) PERSISTED,
+
+    cloth_refill_status INT NULL,
+    cap_refill_status INT NULL,
+    glue_refill_status INT NULL
 );
 
-CREATE INDEX idx_filtrex_timestamp ON dbo.filtrex_data ([timestamp]);
-CREATE INDEX idx_filtrex_shift ON dbo.filtrex_data (shift);
-CREATE INDEX idx_filtrex_sku ON dbo.filtrex_data (sku);
+-- =========================
+-- INDEXES
+-- =========================
+
+-- main reporting index (daily + shift + sku)
+CREATE INDEX idx_filtrex_main
+ON dbo.filtrex_data (production_date, shift, sku);
+END
+
+

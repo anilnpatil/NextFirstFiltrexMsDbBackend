@@ -8,6 +8,6 @@ import com.nff.NextFirstFiltrex.entities.AlarmAndDownTime;
 @Repository
 public interface AlarmAndDownTimeRepository extends JpaRepository<AlarmAndDownTime, Long>{
 
-  AlarmAndDownTime findTopByOrderByTimestampDesc();
+  AlarmAndDownTime findTopByOrderByAlarmDateTimeDesc();
 
 }

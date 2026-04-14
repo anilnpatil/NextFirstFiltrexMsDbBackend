@@ -15,22 +15,25 @@ public class FiltrexDailyAggregationRepository {
 
     public void aggregate(LocalDate date) {
 
-        // Use SQL Server compatible MERGE statement and CAST to date
         String sql = """
             MERGE INTO filtrex_daily_agg AS target
             USING (
               SELECT
-                CAST([timestamp] AS date) AS production_date,
+                CAST(production_date_time AS date) AS production_date,
                 sku,
                 shift,
                 COUNT(*) AS total_count,
-                SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS ok_count,
-                SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS not_ok_count
+                SUM(CASE WHEN part_status = 1 THEN 1 ELSE 0 END) AS ok_count,
+                SUM(CASE WHEN part_status = 0 THEN 1 ELSE 0 END) AS not_ok_count
               FROM filtrex_data
-              WHERE CAST([timestamp] AS date) = ?
-              GROUP BY CAST([timestamp] AS date), sku, shift
+              WHERE CAST(production_date_time AS date) = ?
+              GROUP BY CAST(production_date_time AS date), sku, shift
             ) AS src
-            ON (target.production_date = src.production_date AND target.sku = src.sku AND target.shift = src.shift)
+            ON (
+                target.production_date = src.production_date
+                AND target.sku = src.sku
+                AND target.shift = src.shift
+            )
             WHEN MATCHED THEN
               UPDATE SET
                 total_count = src.total_count,

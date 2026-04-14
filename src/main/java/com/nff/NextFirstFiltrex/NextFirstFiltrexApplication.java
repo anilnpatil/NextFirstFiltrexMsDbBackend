@@ -11,5 +11,4 @@ public class NextFirstFiltrexApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NextFirstFiltrexApplication.class, args);
 	}
-
 }

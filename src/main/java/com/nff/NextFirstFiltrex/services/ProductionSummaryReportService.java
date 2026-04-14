@@ -1,47 +1,27 @@
-// package com.nff.NextFirstFiltrex.services;
-
-// import java.time.LocalDate;
-// import java.util.List;
-
-// import com.nff.NextFirstFiltrex.dto.ProductionReportRow;
-
-// public interface ProductionReportService {
-
-//   public List<ProductionReportRow> getReport(
-//             LocalDate from,
-//             LocalDate to,
-//             String sku,
-//             Integer shift);
-
-// }
 package com.nff.NextFirstFiltrex.services;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import com.nff.NextFirstFiltrex.dto.ProductionReportRow;
+import com.nff.NextFirstFiltrex.dto.ProductionSummaryReportRow;
+
 
 public interface ProductionSummaryReportService {
 
-//     List<ProductionReportRow> getReport(
-//             LocalDate from,
-//             LocalDate to,
-//             String sku,
-//             Integer shift);
 
-    List<ProductionReportRow> getDailySummaryReport(
+    List<ProductionSummaryReportRow> getDailySummaryReport(
             LocalDate from,
             LocalDate to,
-            String sku,
+            Integer sku,
             Integer shift);
 
-    List<ProductionReportRow> getWeeklySummaryReport(
+    List<ProductionSummaryReportRow> getWeeklySummaryReport(
             int year,
-            String sku,
+            Integer sku,
             Integer shift);
 
-    List<ProductionReportRow> getMonthlySummaryReport(
+    List<ProductionSummaryReportRow> getMonthlySummaryReport(
             int year,
-            String sku,
+            Integer sku,
             Integer shift);
 }

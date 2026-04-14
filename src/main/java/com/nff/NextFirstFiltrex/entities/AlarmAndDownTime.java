@@ -22,12 +22,18 @@ public class AlarmAndDownTime {
     @Column(name = "alarm_code")
     private Integer alarmCode;
 
+    @Column(name = "alarm_start_time")
+    private Time alarmStartTime;
+
+    @Column(name = "alarm_end_time")
+    private Time alarmEndTime;
+
     @Column(name = "line_failure_data")
     private String lineFailureData;
 
     @Column(name = "down_time")
     private Time downTime;
 
-    @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    @Column(name = "alarm_date_time")
+    private LocalDateTime alarmDateTime;
 }
