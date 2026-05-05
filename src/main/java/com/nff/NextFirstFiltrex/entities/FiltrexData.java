@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "filtrex_data", schema = "dbo")
@@ -46,7 +45,7 @@ public class FiltrexData {
     private Integer partStatus;
 
     @Column(name = "cycle_time")
-    private LocalTime cycleTime;
+    private Float cycleTime;
 
     @Column(name = "production_date_time")
     private LocalDateTime productionDateTime;

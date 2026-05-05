@@ -1,7 +1,7 @@
 package com.nff.NextFirstFiltrex.services.impl;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
+// import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -80,12 +80,7 @@ public class ProductionSummaryReportServiceImpl implements ProductionSummaryRepo
     }
 
     /* helpers */
-
     private LocalDate min(LocalDate a, LocalDate b) {
         return a.isBefore(b) ? a : b;
-    }
-
-    private YearMonth minYm(YearMonth a, YearMonth b) {
-        return a.isBefore(b) ? a : b;
-    }
+    }    
 }

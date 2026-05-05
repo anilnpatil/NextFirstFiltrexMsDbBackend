@@ -18,8 +18,7 @@ public class ProductionSummary {
         this.sku = sku;
         this.productionDateTime = productionDateTime;
     }
-
-    // Getters and setters
+    
     public long getOkParts() {
         return okParts;
     }

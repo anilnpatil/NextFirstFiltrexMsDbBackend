@@ -33,7 +33,7 @@ public class FiltrexDataJdbcRepository {
                 .blockHeightInspectionStatus(rs.getInt("block_height_inspection_status"))
                 .airFlowTestResult(rs.getInt("air_flow_test_result"))
                 .partStatus(rs.getInt("part_status"))
-                .cycleTime(rs.getTime("cycle_time") != null ? rs.getTime("cycle_time").toLocalTime() : null)
+                .cycleTime(rs.getObject("cycle_time") != null ? rs.getFloat("cycle_time") : null)
                 .productionDateTime(rs.getTimestamp("production_date_time").toLocalDateTime())
                 .clothRefillStatus(rs.getInt("cloth_refill_status"))
                 .capRefillStatus(rs.getInt("cap_refill_status"))

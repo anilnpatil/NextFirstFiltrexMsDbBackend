@@ -4,7 +4,6 @@ import com.nff.NextFirstFiltrex.entities.FiltrexData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public record FiltrexDataResponse(
         Long slNo,
@@ -16,7 +15,7 @@ public record FiltrexDataResponse(
         Integer blockHeightInspectionStatus,
         Integer airFlowTestResult,
         Integer partStatus,
-        LocalTime cycleTime,
+        Float cycleTime,
         LocalDateTime productionDateTime,
         LocalDate productionDate,
         Integer clothRefillStatus,

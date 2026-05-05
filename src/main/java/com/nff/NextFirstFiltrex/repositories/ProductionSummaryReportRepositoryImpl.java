@@ -4,15 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import com.nff.NextFirstFiltrex.dto.ProductionSummaryReportRow;
 import com.nff.NextFirstFiltrex.dto.ProductionTotalsRow;
-// /import com.nff.NextFirstFiltrex.repositories.sql.ProductionTotalsSql;
 import com.nff.NextFirstFiltrex.repositories.sql.ProductionSummarySql;
-
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -27,21 +23,6 @@ public class ProductionSummaryReportRepositoryImpl implements ProductionSummaryR
             LocalDate to,
             Integer sku,
             Integer shift) {
-
-        // String sql = """
-        //     SELECT
-        //       production_date AS date,
-        //       sku,
-        //       shift,
-        //       total_count,
-        //       ok_count,
-        //       not_ok_count
-        //     FROM filtrex_daily_agg
-        //     WHERE production_date BETWEEN ? AND ?
-        //       AND (? IS NULL OR sku = ?)
-        //       AND (? IS NULL OR shift = ?)
-        //     ORDER BY production_date
-        // """;
 
         return jdbcTemplate.query(
                 ProductionSummarySql.DAILY_SUMMARY,
@@ -66,9 +47,6 @@ public class ProductionSummaryReportRepositoryImpl implements ProductionSummaryR
                 }
         );
     }
-
-
-
         @Override
     public List<ProductionSummaryReportRow> fetchWeeklySummary(
             int year,

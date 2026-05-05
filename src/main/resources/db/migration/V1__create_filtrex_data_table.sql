@@ -15,7 +15,7 @@ CREATE TABLE dbo.filtrex_data (
     air_flow_test_result INT NULL,
     part_status INT NULL,
 
-    cycle_time TIME(7) NULL,
+    cycle_time FLOAT NULL,
 
     production_date_time DATETIME2 NULL,
 
@@ -27,10 +27,7 @@ CREATE TABLE dbo.filtrex_data (
     glue_refill_status INT NULL
 );
 
--- =========================
 -- INDEXES
--- =========================
-
 -- main reporting index (daily + shift + sku)
 CREATE INDEX idx_filtrex_main
 ON dbo.filtrex_data (production_date, shift, sku);

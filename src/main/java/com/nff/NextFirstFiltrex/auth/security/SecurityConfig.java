@@ -36,8 +36,7 @@ public class SecurityConfig {
                             "/api/plc-data/**",
                             "/ws/**",
                             "/topic/**"
-                        ).permitAll()
-                        //,"/getSavedTagsById","/tagValues/**","/saveSelectedTags","/user/**"
+                        ).permitAll()                        
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/user/**","/getSavedTagsById","/tagValues/**","/saveSelectedTags","/interval-tags/**").hasAnyAuthority
                         ("USER", "ADMIN")

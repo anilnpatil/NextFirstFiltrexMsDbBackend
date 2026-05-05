@@ -35,9 +35,8 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserService userService;
+    private UserService userService;    
     
-    //register user
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest req) {
         try {
@@ -79,16 +78,11 @@ public Map<String, String> login(@RequestBody AuthRequest req) {
 }
 
 @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser() {
-        // Since JWT is stateless, logout is handled client-side by discarding the token
-        // Here we just return a success response
+    public ResponseEntity<?> logoutUser() {        
         return ResponseEntity.ok("User logged out successfully!");
     }
 
-    /**
-     * Get all users
-     * GET /api/auth/users
-     * 
+    /**     
      * @return ResponseEntity with list of all users
      */
     @GetMapping("/users")
@@ -108,10 +102,7 @@ public Map<String, String> login(@RequestBody AuthRequest req) {
         }
     }
     
-    /**
-     * Delete a user by ID
-     * DELETE /api/auth/users/{id}
-     * 
+    /**     
      * @param id The user ID to delete
      * @return ResponseEntity with success or error message
      */
