@@ -70,11 +70,10 @@ public class FiltrexDataController {
     }
 
     /* SHIFT PRODUCTION SUMMARY */
-
+    // http://localhost:9091/api/filtrexdata/production-summary/shift
     @GetMapping("/production-summary/shift")
     public ResponseEntity<ProductionSummary> getShiftProductionSummary(
-            @RequestParam(required = false) Integer shift,
-            @RequestParam(required = false)
+            @RequestParam(required = false) Integer shift,            
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate date) {
 

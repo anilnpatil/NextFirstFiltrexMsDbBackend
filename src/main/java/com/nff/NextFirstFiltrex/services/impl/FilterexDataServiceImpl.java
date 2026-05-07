@@ -95,13 +95,22 @@ public class FilterexDataServiceImpl implements FiltrexDataService {
 
         List<FiltrexData> data = filtrexDataJdbcRepository.findByDate(start, end);
 
+        if (shift == null && !data.isEmpty()) {
+            shift = data.stream()
+                    .max(Comparator.comparing(FiltrexData::getProductionDateTime))
+                    .map(FiltrexData::getShift)
+                    .orElse(null);
+        }
+
+        final Integer finalShift = shift;
+
         long ok = data.stream()
-                .filter(d -> shift == null || shift.equals(d.getShift()))
+                .filter(d -> finalShift != null && finalShift.equals(d.getShift()))
                 .filter(d -> d.getPartStatus() != null && d.getPartStatus() == 1)
                 .count();
 
         long notOk = data.stream()
-                .filter(d -> shift == null || shift.equals(d.getShift()))
+                .filter(d -> finalShift != null && finalShift.equals(d.getShift()))
                 .filter(d -> d.getPartStatus() != null && d.getPartStatus() == 0)
                 .count();
 
@@ -109,15 +118,12 @@ public class FilterexDataServiceImpl implements FiltrexDataService {
 
         Integer resolvedShift = shift;
         LocalDateTime resolvedProductionDateTime = productionDateTime;
-        if (resolvedShift == null && !data.isEmpty()) {
-            resolvedShift = data.stream()
-                    .max(Comparator.comparing(FiltrexData::getProductionDateTime))
-                    .map(FiltrexData::getShift)
-                    .orElse(null);
+        if (resolvedShift != null) {
             resolvedProductionDateTime = data.stream()
+                    .filter(d -> resolvedShift.equals(d.getShift()))
                     .max(Comparator.comparing(FiltrexData::getProductionDateTime))
                     .map(FiltrexData::getProductionDateTime)
-                    .orElse(null);
+                    .orElse(productionDateTime);
         }
 
         final Integer finalResolvedShift = resolvedShift;
