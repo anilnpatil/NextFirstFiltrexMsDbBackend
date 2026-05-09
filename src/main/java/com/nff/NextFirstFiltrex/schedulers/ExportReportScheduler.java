@@ -15,21 +15,21 @@ public class ExportReportScheduler {
     @Autowired
     private ExportReportService exportReportService;
 
-    // 🕑 SHIFT 1 END → 14:00
-    @Scheduled(cron = "1 44 16 * * ?")   
+    // 🕑 SHIFT 1 END → 14:05:01
+    @Scheduled(cron = "1 5 2 * * ?")   
     public void exportShift1() {
         LocalDate today = LocalDate.now();
         exportReportForShift(1, today);
     }
 
-    // 🕙 SHIFT 2 END → 22:00
+    // 🕙 SHIFT 2 END → 22:05:01
     @Scheduled(cron = "1 5 22 * * ?")
     public void exportShift2() {
         LocalDate today = LocalDate.now();
         exportReportForShift(2, today);
     }
 
-    // 🌙 SHIFT 3 END → 06:00 (next day)
+    // 🌙 SHIFT 3 END → 06:05:01 (next day)
     @Scheduled(cron = "1 5 6 * * ?")
     public void exportShift3() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
